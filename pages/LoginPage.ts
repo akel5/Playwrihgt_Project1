@@ -6,6 +6,9 @@ export class LoginPage extends BasePage {
   private passwordInput = this.page.locator('#password');
   private loginButton = this.page.locator('#login button');
   private flashMessage = this.page.locator('#flash b');
+  private flashMessageLogout = this.page.locator('id=flash');
+  private logoutButton =  this.page.getByRole('link', { name: 'logout' });
+  
 
   constructor(page: Page) { 
     super(page);
@@ -17,7 +20,15 @@ export class LoginPage extends BasePage {
     await this.loginButton.click();
   }
 
+  async logout() {
+    await this.logoutButton.click();
+  }
+
    getFlashMessage() {
     return this.page.locator('#flash b');
+  }
+
+  getFlashLogoutMessage() {
+    return this.flashMessageLogout;
   }
 }
