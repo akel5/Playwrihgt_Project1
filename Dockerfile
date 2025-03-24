@@ -1,6 +1,7 @@
 # 1. משתמשים בתמונה של Playwright כבסיס
-FROM mcr.microsoft.com/playwright:v1.51.0-focal
-  
+FROM mcr.microsoft.com/playwright:v1.51.1-noble
+
+
 
 # 2. קובעים תיקיית עבודה
 WORKDIR /app
