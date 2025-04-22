@@ -28,7 +28,7 @@ jobs: # הגדרת המשימות (Jobs)
       run: npx playwright install --with-deps # '--with-deps' מתקין גם תלויות מערכת הפעלה עבור הדפדפנים בלינוקס
 
     - name: Run Playwright tests # שלב 5: הרצת הבדיקות
-      run: npm test # מריץ את הפקודה שהוגדרה תחת "test" בסעיף ה-"scripts" ב-package.json. שנה אם הפקודה שלך שונה (למשל, 'npx playwright test').
+      run: npx playwright test # מריץ את הפקודה שהוגדרה תחת "test" בסעיף ה-"scripts" ב-package.json. שנה אם הפקודה שלך שונה (למשל, 'npx playwright test').
 
     # (אופציונלי) שלב 6: העלאת תוצאות הבדיקה כ-Artifacts
     - name: Upload test results
