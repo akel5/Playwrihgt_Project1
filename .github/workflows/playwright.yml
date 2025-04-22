@@ -1,27 +1,40 @@
-name: Playwright Tests
-on:
-  push:
+name: Playwright Tests # שם ה-Workflow שיוצג ב-GitHub
+
+on: # הגדרת הטריגרים (מתי ה-Workflow ירוץ)
+  push: # ירוץ בכל פעם שיש push לענפים הראשיים
     branches: [ main, master ]
-  pull_request:
+  pull_request: # ירוץ בכל פעם שנפתח או מתעדכן Pull Request לענפים הראשיים
     branches: [ main, master ]
-jobs:
-  test:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+  workflow_dispatch: {} # מאפשר הרצה ידנית מהממשק של GitHub Actions
+
+jobs: # הגדרת המשימות (Jobs)
+  test: # שם ה-Job (יכול להיות כל שם)
+    timeout-minutes: 60 # זמן מקסימלי לריצת ה-Job
+    runs-on: ubuntu-latest # הגדרת ה-Runner. נשתמש ב-Runner לינוקס ש-GitHub מספקת.
+
+    steps: # רשימת השלבים שיבוצעו ב-Job
+    - name: Checkout code # שלב 1: הורדת הקוד מהמאגר ל-Runner
+      uses: actions/checkout@v4 # שימוש ב-Action מוכן מראש להורדת הקוד
+
+    - name: Set up Node.js # שלב 2: התקנת Node.js (נדרש ל-TypeScript ו-npm)
+      uses: actions/setup-node@v4
       with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
+        node-version: '18' # ציין את גרסת ה-Node.js שמתאימה לפרויקט שלך
+
+    - name: Install dependencies # שלב 3: התקנת התלויות מה-package.json
+      run: npm ci # 'npm ci' מומלץ ב-CI כי הוא מהיר יותר ומבטיח שימוש ב-package-lock.json. אפשר גם 'npm install'.
+
+    - name: Install Playwright Browsers # שלב 4: התקנת הדפדפנים ש-Playwright צריך (Chromium, Firefox, WebKit)
+      run: npx playwright install --with-deps # '--with-deps' מתקין גם תלויות מערכת הפעלה עבור הדפדפנים בלינוקס
+
+    - name: Run Playwright tests # שלב 5: הרצת הבדיקות
+      run: npm test # מריץ את הפקודה שהוגדרה תחת "test" בסעיף ה-"scripts" ב-package.json. שנה אם הפקודה שלך שונה (למשל, 'npx playwright test').
+
+    # (אופציונלי) שלב 6: העלאת תוצאות הבדיקה כ-Artifacts
+    - name: Upload test results
+      if: always() # ודא שזה ירוץ גם אם הבדיקות נכשלות
+      uses: actions/upload-artifact@v4
       with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+        name: playwright-report # שם ה-Artifact שיופיע ב-GitHub
+        path: playwright-report/ # הנתיב לתיקייה שבה Playwright שומר את הדוחות (שנה בהתאם להגדרות שלך)
+        retention-days: 30 # כמה זמן לשמור את ה-Artifacts
